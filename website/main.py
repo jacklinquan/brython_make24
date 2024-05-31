@@ -1,6 +1,7 @@
 from browser import document, html, window, console, bind  # type: ignore
 from make24_solver import solve24
 
+
 def main():
     # Header
     document <= html.NAV(
@@ -21,12 +22,12 @@ def main():
             html.DIV(
                 html.A(
                     str((i + 1) * 2),
-                    Class="dropdown-trigger btn center",
+                    Class="dropdown-trigger btn col s8 offset-s2",
                     href="#",
                     data_target=f"num_dropdown_{i}",
                     Id=f"num_{i}",
                 ),
-                Class="col s3 center",
+                Class="col s3",
             )
             for i in range(4)
         ),
@@ -66,35 +67,40 @@ def main():
         Class="container center",
     )
 
-    def get_make24_result_text():
-        nums = [
-            int(document[f"num_{i}"].text)
-            for i in range(4)
-        ]
-        
+    def get_make24_result_text(event):
+        nums = [int(document[f"num_{i}"].text) for i in range(4)]
+
         all_result_24 = solve24(*nums)
 
         result_text = f"With number(s) {nums}, "
         result_text += f"there is/are {len(all_result_24)} solution(s) in total:\n"
-        result_text += "\n".join((str(item) for item in all_result_24))
 
-        return result_text
-    
-    document["go_btn"].bind(
-        "click",
-        lambda ev: setattr(document["output"], "text", get_make24_result_text())
-    )
+        document["output_text"].text = result_text
+
+        document["output_table"].clear()
+        document["output_table"] <= html.TBODY(
+            (html.TR(str(item), Class="center") for item in all_result_24)
+        )
+
+    document["go_btn"].bind("click", get_make24_result_text)
 
     # Leave some space
     document <= html.P()
 
+    # Add a divider
     document <= html.DIV(Class="divider")
 
     # Leave some space
     document <= html.P()
 
-    # Output
-    document <= html.P(Class="flow-text", Id="output")
+    # Output text
+    document <= html.P(Class="flow-text", Id="output_text")
+
+    # Output table
+    document <= html.TABLE(Class="striped", Id="output_table")
+
+    # Leave some space
+    document <= html.P()
 
     # Must do window.M.AutoInit() after all html being loaded!
     window.M.AutoInit()

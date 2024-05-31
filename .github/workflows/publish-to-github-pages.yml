@@ -21,7 +21,7 @@ jobs:
           fi
 
       - name: Publish to GitHub Pages
-        uses: rayluo/github-pages-overwriter@v1.3
+        uses: jacklinquan/github-pages-overwriter@v1.3
         with:
           source-directory: website
 
